@@ -15,7 +15,7 @@
     </style>
 </head>
 <body>
-
+   
     <nav class="navbar navbar-inverse navbar-static-top">
         <div class="container">
             <div class="navbar-header">
@@ -26,11 +26,65 @@
 
     <div class="container">
         <h3>Now</h3>
-        <p data-bind="text: currently"></p>
+        <p data-bind="text: currentlySummary"></p>
+   
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Probability</th>
+                    <th>Intensity</th>
+                </tr>
+            </thead>
+            <tbody data-bind="with: currentlyData">
+                <tr>
+                    <td data-bind="text: time"></td>
+                    <td data-bind="text: probability"></td>
+                    <td data-bind="text: error() ? intensity() + ' +/- ' + error() : intensity()"></td>
+                </tr>
+            </tbody>
+        </table>
+
         <h3>Next hour</h3>
-        <p data-bind="text: minutely"></p>
+        <p data-bind="text: minutelySummary"></p>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Probability</th>
+                    <th>Intensity</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: minutelyData">
+                <tr>
+                    <td data-bind="text: time"></td>
+                    <td data-bind="text: probability"></td>
+                    <td data-bind="text: error() ? intensity() + ' +/- ' + error() : intensity()"></td>
+                </tr>
+            </tbody>
+        </table>
+
+
         <h3>Today</h3>
-        <p data-bind="text: hourly"></p>
+        <p data-bind="text: hourlySummary"></p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Probability</th>
+                    <th>Intensity</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: hourlyData">
+                <tr>
+                    <td data-bind="text: time"></td>
+                    <td data-bind="text: probability"></td>
+                    <td data-bind="text: error() ? intensity() + ' +/- ' + error() : intensity()"></td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
 
     <footer class="footer">
