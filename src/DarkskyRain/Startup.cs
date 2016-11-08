@@ -44,6 +44,7 @@ namespace DarkskyRain
 
             app.UseIISPlatformHandler();
 
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseMvc();

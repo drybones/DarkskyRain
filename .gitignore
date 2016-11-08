@@ -273,4 +273,7 @@ __pycache__/
 
 # Cake - Uncomment if you are using it
 # tools/
+
+# Specifics for this project
 src/DarkskyRain/appsettings.Development.json
+src/DarkskyRain/wwwroot/lib
