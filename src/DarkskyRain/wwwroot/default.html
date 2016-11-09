@@ -4,13 +4,16 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Rain forecast</title>
+    <title>Forecast</title>
     <link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="lib/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
 
     <style>
         footer {
             margin-top: 50px;
+        }
+        table {
+            display: none;
         }
     </style>
 </head>
@@ -19,7 +22,7 @@
     <nav class="navbar navbar-inverse navbar-static-top">
         <div class="container">
             <div class="navbar-header">
-                <span class="navbar-brand">Rain forecast</span>
+                <span class="navbar-brand">Forecast</span>
             </div>
         </div>
     </nav>
@@ -48,6 +51,8 @@
         <h3>Next hour</h3>
         <p data-bind="text: minutelySummary"></p>
 
+        <div id="minutelyChart" style="height: 200px; min-width: 310px; margin: 0 auto"></div>
+        
         <table class="table">
             <thead>
                 <tr>
@@ -68,6 +73,9 @@
 
         <h3>Today</h3>
         <p data-bind="text: hourlySummary"></p>
+
+        <div id="hourlyChart" style="height: 200px; min-width: 310px; margin: 0 auto"></div>
+
         <table class="table">
             <thead>
                 <tr>
@@ -96,6 +104,8 @@
     <script src="lib/jquery/dist/jquery.js"></script>
     <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
     <script src="lib/knockout.js/knockout.js"></script>
+    <script src="lib/highcharts/highcharts.js"></script>
+    <script src="lib/highcharts/highcharts-more.js"></script>
     <script src="darksky-rain.js"></script>
 </body>
 </html>

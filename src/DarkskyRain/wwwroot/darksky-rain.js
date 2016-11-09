@@ -41,15 +41,100 @@ function ForecastSummaryModel() {
 
         var mappedMinutelyData = $.map(forecastData.minutely.data, function (item) {
             return new RainDataPoint(item);
-        })
+        });
         self.minutelyData(mappedMinutelyData);
+
+        var minutelyChartData = $.map(forecastData.minutely.data, function (item) {
+            return { x: item.time * 1000, y: item.precipProbability * 100, z: item.precipIntensity };
+        });
+        var minuelyChart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'minutelyChart'
+            },
+            series: [{
+                data: minutelyChartData
+            }]
+        });
 
         var mappedHourlyData = $.map(forecastData.hourly.data, function (item) {
             return new RainDataPoint(item);
-        })
+        });
         self.hourlyData(mappedHourlyData);
+
+        var hourlyChartData = $.map(forecastData.hourly.data, function (item) {
+            return { x: item.time * 1000, y: item.precipProbability * 100, z: item.precipIntensity };
+        });
+        var hourlyChart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'hourlyChart'
+            },
+            series: [{
+                data: hourlyChartData
+            }]
+        });
     });
 }
 
-ko.applyBindings(new ForecastSummaryModel());
+$(function () {
+    Highcharts.setOptions({
+        chart: {
+            type: 'bubble',
+        },
 
+        legend: {
+            enabled: false
+        },
+
+        title: {
+            text: ''
+        },
+
+        xAxis: {
+            gridLineWidth: 1,
+            type: 'datetime',
+            labels: {
+                format: '{value:%H:%M}'
+            }
+        },
+
+        yAxis: {
+            startOnTick: false,
+            endOnTick: false,
+            min: 0,
+            max: 100,
+            title: {
+                text: ''
+            },
+            labels: {
+                format: '{value}%'
+            },
+            maxPadding: 0.2
+        },
+
+        navigation: {
+            buttonOptions: {
+                enabled: false
+            },
+        },
+
+        tooltip: {
+            enabled: false
+        },
+
+        plotOptions: {
+            bubble: {
+                allowPointSelect: false,
+                enableMouseTracking: false,
+                maxSize: "40%",
+                minSize: 0,
+                zMin: 0,
+                zMax: 5,
+                marker: {
+                    lineWidth: 0
+                }
+            }
+        }
+    });
+
+    ko.applyBindings(new ForecastSummaryModel());
+});

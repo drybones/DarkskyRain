@@ -277,3 +277,4 @@ __pycache__/
 # Specifics for this project
 src/DarkskyRain/appsettings.Development.json
 src/DarkskyRain/wwwroot/lib
+src/DarkskyRain/Properties/PublishProfiles/drybones-darksky - Web Deploy-publish.ps1
