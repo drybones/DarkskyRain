@@ -15,6 +15,14 @@
         table {
             display: none;
         }
+        svg > text {
+            display: none;
+        }
+        .forecast-chart {
+            height: 150px; 
+            min-width: 250px; 
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
@@ -53,7 +61,7 @@
         <h3>Next hour</h3>
         <p data-bind="text: minutelySummary"></p>
 
-        <div id="minutelyChart" style="height: 200px; min-width: 310px; margin: 0 auto"></div>
+        <div id="minutelyChart" class="forecast-chart"></div>
         
         <table class="table">
             <thead>
@@ -76,7 +84,7 @@
         <h3>Today</h3>
         <p data-bind="text: hourlySummary"></p>
 
-        <div id="hourlyChart" style="height: 200px; min-width: 310px; margin: 0 auto"></div>
+        <div id="hourlyChart" class="forecast-chart"></div>
 
         <table class="table">
             <thead>

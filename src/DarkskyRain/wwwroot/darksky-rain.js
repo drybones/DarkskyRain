@@ -10,9 +10,9 @@
     }, self);
 
     self.time = ko.computed(function () {
-        var hours = self.datetime().getHours();
+        var hours = "0" + self.datetime().getHours();
         var minutes = "0" + self.datetime().getMinutes();
-        return hours + ':' + minutes.substr(-2);
+        return hours.substr(-2) + ':' + minutes.substr(-2);
     }, this);
 }
 
@@ -79,6 +79,7 @@ $(function () {
     Highcharts.setOptions({
         chart: {
             type: 'bubble',
+            spacing: [10,0,10,0]
         },
 
         legend: {
@@ -107,8 +108,7 @@ $(function () {
             },
             labels: {
                 format: '{value}%'
-            },
-            maxPadding: 0.2
+            }
         },
 
         navigation: {
