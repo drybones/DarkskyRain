@@ -79,7 +79,6 @@ $(function () {
     Highcharts.setOptions({
         chart: {
             type: 'bubble',
-            spacing: [10,0,10,0]
         },
 
         legend: {

@@ -278,3 +278,4 @@ __pycache__/
 src/DarkskyRain/appsettings.Development.json
 src/DarkskyRain/wwwroot/lib
 src/DarkskyRain/Properties/PublishProfiles/drybones-darksky - Web Deploy-publish.ps1
+src/DarkskyRain/appsettings.Production.json
