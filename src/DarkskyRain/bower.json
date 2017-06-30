@@ -2,9 +2,14 @@
   "name": "ASP.NET",
   "private": true,
   "dependencies": {
-    "jquery": "2.1.4",
-    "bootstrap": "3.3.5",
+    "jquery": "2.2.3",
+    "bootstrap": "3.3.6",
     "knockout.js": "~3.1.0",
-    "highcharts": "4.1.8"
+    "highcharts": "4.2.4"
+  },
+  "resolutions": {
+    "highcharts": "4.2.4",
+    "jquery": ">= 1.9.1",
+    "bootstrap": "3.3.6"
   }
 }

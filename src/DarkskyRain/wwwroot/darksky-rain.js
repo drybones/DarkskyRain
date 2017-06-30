@@ -77,8 +77,12 @@ function ForecastSummaryModel() {
 
 $(function () {
     Highcharts.setOptions({
+        global: {
+            useUTC: false
+        },
+
         chart: {
-            type: 'bubble',
+            type: 'bubble'
         },
 
         legend: {
@@ -113,7 +117,7 @@ $(function () {
         navigation: {
             buttonOptions: {
                 enabled: false
-            },
+            }
         },
 
         tooltip: {
