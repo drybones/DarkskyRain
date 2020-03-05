@@ -1,0 +1,29 @@
+name: Build code and deploy to Azure
+
+on: [push]
+
+jobs:
+  build:
+    name: Build Code
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.2.108
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+
+  deploy:
+    needs: build
+    name: Deploy App
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: deploy to azure web app
+      uses: azure/appservice-actions/webapp@master
+      with: 
+        app-name: drybones-darksky
+        publish-profile: ${{ secrets.azureWebAppPublishProfile }}
