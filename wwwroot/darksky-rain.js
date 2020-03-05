@@ -16,63 +16,83 @@
     }, this);
 }
 
-function ForecastSummaryModel() {
+function ForecastSummaryModel(coords) {
     var self = this;
-    self.currentlySummary = ko.observable("[getting forecast]");
     self.minutelySummary = ko.observable("[getting forecast]");
     self.hourlySummary = ko.observable("[getting forecast]");
+    self.geoLocationError = ko.observable("");
 
-    self.currentlyData = ko.observable();
     self.minutelyData = ko.observableArray();
     self.hourlyData = ko.observableArray();
 
-    $.getJSON("/api/forecast/", function (forecastData) {
-        self.currentlySummary(forecastData.currently.summary);
-        self.minutelySummary(forecastData.minutely.summary);
-        self.hourlySummary(forecastData.hourly.summary);
+    var params = {};
+    if(coords) {
+        params = {latitude: coords.latitude, longitude: coords.longitude};
+    } else {
+        self.geoLocationError("No location available, using default location.")
+    } 
 
-        var currentlyDataItem = {
-            time: forecastData.currently.time,
-            precipProbability: forecastData.currently.precipProbability,
-            precipIntensity: forecastData.currently.precipIntensity,
-            precipIntensityError: forecastData.currently.precipIntensityError
-        };
-        self.currentlyData(new RainDataPoint(currentlyDataItem));
+    $.getJSON("/api/forecast", params, function (forecastData) {
 
-        var mappedMinutelyData = $.map(forecastData.minutely.data, function (item) {
-            return new RainDataPoint(item);
-        });
-        self.minutelyData(mappedMinutelyData);
+        if(forecastData.minutely) {
+            self.minutelySummary(forecastData.minutely.summary);
+            var mappedMinutelyData = $.map(forecastData.minutely.data, function (item) {
+                return new RainDataPoint(item);
+            });
+            self.minutelyData(mappedMinutelyData);
+    
+            var minutelyChartData = $.map(forecastData.minutely.data, function (item) {
+                return { x: item.time * 1000, y: item.precipProbability * 100, z: item.precipIntensity };
+            });
+            var minuelyChart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'minutelyChart'
+                },
+                series: [{
+                    data: minutelyChartData
+                }]
+            });
+        } else {
+            self.minutelySummary("No data available.");
+        }
 
-        var minutelyChartData = $.map(forecastData.minutely.data, function (item) {
-            return { x: item.time * 1000, y: item.precipProbability * 100, z: item.precipIntensity };
-        });
-        var minuelyChart = new Highcharts.Chart({
-            chart: {
-                renderTo: 'minutelyChart'
-            },
-            series: [{
-                data: minutelyChartData
-            }]
-        });
+        if(forecastData.hourly) {
+            self.hourlySummary(forecastData.hourly.summary);
 
-        var mappedHourlyData = $.map(forecastData.hourly.data, function (item) {
-            return new RainDataPoint(item);
-        });
-        self.hourlyData(mappedHourlyData);
-
-        var hourlyChartData = $.map(forecastData.hourly.data, function (item) {
-            return { x: item.time * 1000, y: item.precipProbability * 100, z: item.precipIntensity };
-        });
-        var hourlyChart = new Highcharts.Chart({
-            chart: {
-                renderTo: 'hourlyChart'
-            },
-            series: [{
-                data: hourlyChartData
-            }]
-        });
+            var mappedHourlyData = $.map(forecastData.hourly.data, function (item) {
+                return new RainDataPoint(item);
+            });
+            self.hourlyData(mappedHourlyData);
+    
+            var hourlyChartData = $.map(forecastData.hourly.data, function (item) {
+                return { x: item.time * 1000, y: item.precipProbability * 100, z: item.precipIntensity };
+            });
+            var hourlyChart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'hourlyChart'
+                },
+                series: [{
+                    data: hourlyChartData
+                }]
+            });    
+        } else {
+            self.hourlySummary("No data available.");
+        }
     });
+}
+
+function geoSuccess(pos)
+{
+    ApplyBindings(pos.coords);
+}
+function geoError(error)
+{
+    console.log('GeoLocation error code: '+ error.code);
+    ApplyBindings();
+}
+function ApplyBindings(coords)
+{
+    ko.applyBindings(new ForecastSummaryModel(coords));
 }
 
 $(function () {
@@ -139,5 +159,5 @@ $(function () {
         }
     });
 
-    ko.applyBindings(new ForecastSummaryModel());
+    navigator.geolocation.getCurrentPosition(geoSuccess, geoError, {timeout: 5 * 1000});
 });
