@@ -2,22 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using Microsoft.Extensions.OptionsModel;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 using DarkskyRain.Models;
-
-
-// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace DarkskyRain.Controllers
 {
     [Route("api/[controller]")]
-    public class ForecastController : Controller
+    [ApiController]
+    public class ForecastController : ControllerBase
     {
         const string forecastUrl = @"https://api.darksky.net/forecast/{0}/{1},{2}?exclude=flags,alerts,daily&units=uk2";
-        private static string secretKey { get; set; }
         private static System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
+        private static string secretKey;
         private static double defaultLatitude;
         private static double defaultLongitude;
 
@@ -31,7 +29,7 @@ namespace DarkskyRain.Controllers
             defaultLatitude = optionsAccessor.Value.DefaultLatitude;
             defaultLongitude = optionsAccessor.Value.DefaultLongitude;
         }
-        // GET: api/values
+
         [HttpGet]
         public async Task<string> Get(double? latitude, double? longitude)
         {
@@ -48,5 +46,6 @@ namespace DarkskyRain.Controllers
             }
             return content;
         }
+
     }
 }
