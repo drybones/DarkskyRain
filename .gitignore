@@ -274,5 +274,7 @@ __pycache__/
 # Cake - Uncomment if you are using it
 # tools/
 
+.DS_Store
+
 # Specifics for this project
 appsettings.Development.json
