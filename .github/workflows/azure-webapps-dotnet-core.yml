@@ -23,7 +23,6 @@ env:
   AZURE_WEBAPP_NAME: drybones-darksky    # set this to the name of your Azure Web App
   AZURE_WEBAPP_PACKAGE_PATH: '.'         # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '7.0'                  # set this to the .NET Core version to use
-  working-directory: 'src'
 
 on:
   push:
@@ -37,6 +36,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: src
+        
     steps:
       - uses: actions/checkout@v3
 
