@@ -45,52 +45,17 @@
         <p data-bind="text: minutelySummary"></p>
 
         <div id="minutelyChart" class="forecast-chart"></div>
-        
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Time</th>
-                    <th>Probability</th>
-                    <th>Intensity</th>
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: minutelyData">
-                <tr>
-                    <td data-bind="text: time"></td>
-                    <td data-bind="text: probability"></td>
-                    <td data-bind="text: error() ? intensity() + ' +/- ' + error() : intensity()"></td>
-                </tr>
-            </tbody>
-        </table>
-
 
         <h3>Today and tomorrow</h3>
         <p data-bind="text: hourlySummary"></p>
 
         <div id="hourlyChart" class="forecast-chart"></div>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Time</th>
-                    <th>Probability</th>
-                    <th>Intensity</th>
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: hourlyData">
-                <tr>
-                    <td data-bind="text: time"></td>
-                    <td data-bind="text: probability"></td>
-                    <td data-bind="text: error() ? intensity() + ' +/- ' + error() : intensity()"></td>
-                </tr>
-            </tbody>
-        </table>
-
     </div>
 
     <footer class="footer">
         <div class="container">
-            <p class="text-muted font-weight-light">Powered by <a href="https://darksky.net/poweredby/">Dark Sky</a> and <a href="http://www.highcharts.com/">Highcharts</a></p>
+            <p class="text-muted font-weight-light">Powered by <a href="https://weatherkit.apple.com/legal-attribution.html">WeatherKit</a> and <a href="http://www.highcharts.com/">Highcharts</a></p>
         </div>
     </footer>
 

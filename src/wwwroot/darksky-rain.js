@@ -1,29 +1,8 @@
-﻿function RainDataPoint(item) {
-    var self = this;
-    self.timestamp = ko.observable(item.time);
-    self.probability = ko.observable(item.precipProbability);
-    self.intensity = ko.observable(item.precipIntensity);
-    self.error = ko.observable(item.precipIntensityError);
-
-    self.datetime = ko.computed(function () {
-        return new Date(self.timestamp() * 1000);
-    }, self);
-
-    self.time = ko.computed(function () {
-        var hours = "0" + self.datetime().getHours();
-        var minutes = "0" + self.datetime().getMinutes();
-        return hours.substr(-2) + ':' + minutes.substr(-2);
-    }, this);
-}
-
-function ForecastSummaryModel(coords) {
+﻿function ForecastSummaryModel(coords) {
     var self = this;
     self.minutelySummary = ko.observable("[getting forecast]");
     self.hourlySummary = ko.observable("[getting forecast]");
     self.geoLocationError = ko.observable("");
-
-    self.minutelyData = ko.observableArray();
-    self.hourlyData = ko.observableArray();
 
     var params = {};
     if(coords) {
@@ -34,15 +13,11 @@ function ForecastSummaryModel(coords) {
 
     $.getJSON("/api/forecast", params, function (forecastData) {
 
-        if(forecastData.minutely) {
-            self.minutelySummary(forecastData.minutely.summary);
-            var mappedMinutelyData = $.map(forecastData.minutely.data, function (item) {
-                return new RainDataPoint(item);
-            });
-            self.minutelyData(mappedMinutelyData);
-    
-            var minutelyChartData = $.map(forecastData.minutely.data, function (item) {
-                return { x: item.time * 1000, y: item.precipProbability * 100, z: item.precipIntensity };
+        if(forecastData.forecastNextHour) {
+            self.minutelySummary("");    
+
+            var minutelyChartData = $.map(forecastData.forecastNextHour.minutes, function (item) {
+                return { x: Date.parse(item.startTime), y: item.precipitationChance * 100, z: item.precipitationIntensity };
             });
             var minuelyChart = new Highcharts.Chart({
                 chart: {
@@ -56,16 +31,11 @@ function ForecastSummaryModel(coords) {
             self.minutelySummary("No data available.");
         }
 
-        if(forecastData.hourly) {
-            self.hourlySummary(forecastData.hourly.summary);
-
-            var mappedHourlyData = $.map(forecastData.hourly.data, function (item) {
-                return new RainDataPoint(item);
-            });
-            self.hourlyData(mappedHourlyData);
+        if(forecastData.forecastHourly) {
+            self.hourlySummary("");
     
-            var hourlyChartData = $.map(forecastData.hourly.data, function (item) {
-                return { x: item.time * 1000, y: item.precipProbability * 100, z: item.precipIntensity };
+            var hourlyChartData = $.map(forecastData.forecastHourly.hours, function (item) {
+                return { x: Date.parse(item.forecastStart), y: item.precipitationChance * 100, z: item.precipitationIntensity };
             });
             var hourlyChart = new Highcharts.Chart({
                 chart: {
