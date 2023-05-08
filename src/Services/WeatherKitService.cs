@@ -12,7 +12,6 @@ using System.Net.Http.Headers;
 using WeatherKitExample.Extensions;
 using TimeZoneConverter;
 using System.Web;
-using Jose;
 
 
 namespace WeatherKitExample.Services
@@ -72,6 +71,9 @@ namespace WeatherKitExample.Services
 
             var messageBytes = Encoding.UTF8.GetBytes(message);
 
+            // NB this will fail if deployed to standard Azure web app tiers.
+            // Add an application setting of WEBSITE_LOAD_USER_PROFILE=1 to fix.
+            // See related issue https://stackoverflow.com/questions/43349954/how-can-i-sign-a-jwt-token-on-an-azure-webjob-without-getting-a-cryptographicexc
             var crypto = ECDsa.Create();
             crypto.ImportPkcs8PrivateKey(Convert.FromBase64String(_weatherKitSettings.PrivateKey ?? string.Empty), out _);
 
@@ -79,33 +81,6 @@ namespace WeatherKitExample.Services
 
             return message + "." + EncodingHelper.JwtBase64Encode(signature);
         }
-
-        public string GetTokenJoseJwt()
-        {
-            var header = new Dictionary<string, object>()
-            {
-                { "alg", "ES256" },
-                { "kid", _weatherKitSettings.KeyIdentifier },
-                { "id",  _weatherKitSettings.TeamID + "." + _weatherKitSettings.ServiceID }
-            };
-            
-            var payload = new Dictionary<string, object>
-            {
-                { "iss", _weatherKitSettings.TeamID },
-                { "iat", DateTimeOffset.UtcNow.ToUnixTimeSeconds() },
-                { "exp", DateTimeOffset.UtcNow.AddMinutes(_weatherKitSettings.TokenExpirationMinutes ?? 30).ToUnixTimeSeconds() },
-                { "sub", _weatherKitSettings.ServiceID }
-            };
-            
-            var bytes = Convert.FromBase64String(_weatherKitSettings.PrivateKey);
-            var ecd = ECDsa.Create();
-            ecd.ImportPkcs8PrivateKey(bytes, out int _);
-
-            string token = JWT.Encode(payload, ecd, JwsAlgorithm.ES256, header);
-        
-            return token;
-        }
-        
 
         public async Task<List<WeatherKitDataSetType>?> GetAvailability(double latitude, double longitude)
         {
@@ -123,7 +98,7 @@ namespace WeatherKitExample.Services
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Add("User-Agent", AppSettings.ServiceUserAgent);
                 client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + GetTokenJoseJwt());
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + GetToken());
 
                 var requestUri = new Uri(_weatherKitSettings.BaseUrl).Append(string.Format("availability/{0}/{1}", latitude, longitude));
 
@@ -179,7 +154,7 @@ namespace WeatherKitExample.Services
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Add("User-Agent", AppSettings.ServiceUserAgent);
                 client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + GetTokenJoseJwt());
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + GetToken());
 
                 var datasetsString = string.Join(",", datasets.Select(d => d.ToString().FirstCharToLowerCase()));
 
